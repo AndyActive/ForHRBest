@@ -6,11 +6,12 @@ import javax.persistence.*;
 
 
 @Entity
+@Table(name = "Worker")
 public class Worker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int performance ;
+    private Integer salary ;
     private String name;
     private String completedTasks;
     private String outstandingTasks;
@@ -21,9 +22,9 @@ public class Worker {
     public Worker() {
     }
 
-    public Worker(Long id, int performance, String name, String completedTasks, String outstandingTasks, Projects workProjects, Boolean online) {
+    public Worker( int salary, String name, String completedTasks, String outstandingTasks, Projects workProjects, Boolean online) {
         this.id = id;
-        this.performance = performance;
+        this.salary = salary;
         this.name = name;
         this.completedTasks = completedTasks;
         this.outstandingTasks = outstandingTasks;
@@ -39,12 +40,12 @@ public class Worker {
         this.id = id;
     }
 
-    public int getPerformance() {
-        return performance;
+    public int getSalary() {
+        return salary;
     }
 
-    public void setPerformance(int performance) {
-        this.performance = performance;
+    public void setSalary(int performance) {
+        this.salary = performance;
     }
 
     public String getName() {
