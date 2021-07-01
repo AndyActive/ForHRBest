@@ -88,28 +88,28 @@ public class WorkServiceImpl implements WorkerService{
         }
 
 
-//        @Override
-//        public List<Worker> findByParams(Map<String, String> params) {
-//            String name = (String) params.getOrDefault("name", null);
-//            String completedTasks = params.getOrDefault("completedTasks", null);
-//            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-//            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
-//            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
-//            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
-//            return userRepo.findAllByParams( name ,salary, completedTasks,outstandingTasks,workProjects,online).stream().collect(Collectors.toList());
-//
-//        }
+        @Override
+        public List<Worker> findByParams(Map<String, String> params) {
+            String name = (String) params.getOrDefault("name", null);
+            String completedTasks = params.getOrDefault("completedTasks", null);
+            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
+            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
+            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
+            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
+            return userRepo.findAllByParams( name ,salary, completedTasks,outstandingTasks,workProjects,online).stream().collect(Collectors.toList());
 
-//        @Override
-//        public Integer countByParams(Map<String, String> params) {
-//            String name = (String) params.getOrDefault("name", null);
-//            String completedTasks = params.getOrDefault("completedTasks", null);
-//            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-//            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
-//            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
-//            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
-//            return userRepo.countByParams(name,salary, completedTasks,outstandingTasks,workProjects,online);
-//        }
+        }
+
+        @Override
+        public Integer countByParams(Map<String, String> params) {
+            String name = (String) params.getOrDefault("name", null);
+            String completedTasks = params.getOrDefault("completedTasks", null);
+            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
+            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
+            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
+            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
+            return userRepo.countByParams(name,salary, completedTasks,outstandingTasks,workProjects,online);
+        }
 
         @Override
         public Integer count() {
