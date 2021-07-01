@@ -4,7 +4,7 @@ package com.presentation.andy.service;
 import com.presentation.andy.model.Worker;
 import com.presentation.andy.projects.Projects;
 
-import com.presentation.andy.repository.UserRepoIMPL;
+import com.presentation.andy.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,17 +18,17 @@ import java.util.stream.Collectors;
 public class WorkServiceImpl implements WorkerService{
 
 
-       @Autowired
-       private final UserRepoIMPL userRepoIMPL;
 
-    public WorkServiceImpl(UserRepoIMPL userRepoIMPL) {
-        this.userRepoIMPL = userRepoIMPL;
+       private final UserRepo userRepo;
+
+    public WorkServiceImpl(UserRepo userRepo) {
+        this.userRepo = userRepo;
     }
 
 
     @Override
         public List<Worker> findAll(Pageable pageable) {
-            return userRepoIMPL.findAll(pageable).stream().collect(Collectors.toList());
+            return userRepo.findAll(pageable).stream().collect(Collectors.toList());
         }
 
         @Override
@@ -41,7 +41,7 @@ public class WorkServiceImpl implements WorkerService{
                 Boolean online = Boolean.parseBoolean(params.getOrDefault("online", "false"));
                 Integer salary = Integer.parseInt(params.getOrDefault("salary","800"));
                 Worker worker = new Worker(salary, name,completedTasks,outstandingTasks,workProjects,online);
-                return userRepoIMPL.save(worker);
+                return userRepo.save(worker);
             } catch (NullPointerException | IllegalArgumentException | ClassCastException e) {
                 return null;
             }
@@ -49,8 +49,8 @@ public class WorkServiceImpl implements WorkerService{
 
         @Override
         public Worker updatePlayer(Long id, Map<String, String> params) {
-            if (!userRepoIMPL.findById(id).isPresent() || params == null) return null;
-            Worker result = userRepoIMPL.findById(id).get();
+            if (!userRepo.findById(id).isPresent() || params == null) return null;
+            Worker result = userRepo.findById(id).get();
             String name = params.getOrDefault("name", null);
             String completedTasks = params.getOrDefault("completedTasks", null);
             String outstandingTasks = params.getOrDefault("outstandingTasks", null);
@@ -67,15 +67,15 @@ public class WorkServiceImpl implements WorkerService{
             if (workProjects != null) result.setWorkProjects(workProjects);
             if (online != null) result.setOnline(online);
 
-            userRepoIMPL.saveAndFlush(result);
+            userRepo.save(result); //AndFlush
             return result;
         }
 
         @Override
         public boolean deleteById(Long id) {
-            boolean isExists = userRepoIMPL.existsById(id);
+            boolean isExists = userRepo.existsById(id);
             if (isExists) {
-                userRepoIMPL.deleteById(id);
+                userRepo.deleteById(id);
                 return true;
             } else {
                 return false;
@@ -84,37 +84,37 @@ public class WorkServiceImpl implements WorkerService{
 
         @Override
         public Worker findById(Long id) {
-            return userRepoIMPL.findById(id).get();
+            return userRepo.findById(id).get();
         }
 
 
-        @Override
-        public List<Worker> findByParams(Map<String, String> params) {
-            String name = (String) params.getOrDefault("name", null);
-            String completedTasks = params.getOrDefault("completedTasks", null);
-            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
-            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
-            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
-            return userRepoIMPL.findAllByParams( name ,salary, completedTasks,outstandingTasks,workProjects,online).stream().collect(Collectors.toList());
+//        @Override
+//        public List<Worker> findByParams(Map<String, String> params) {
+//            String name = (String) params.getOrDefault("name", null);
+//            String completedTasks = params.getOrDefault("completedTasks", null);
+//            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
+//            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
+//            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
+//            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
+//            return userRepo.findAllByParams( name ,salary, completedTasks,outstandingTasks,workProjects,online).stream().collect(Collectors.toList());
+//
+//        }
 
-        }
-
-        @Override
-        public Integer countByParams(Map<String, String> params) {
-            String name = (String) params.getOrDefault("name", null);
-            String completedTasks = params.getOrDefault("completedTasks", null);
-            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
-            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
-            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
-            return userRepoIMPL.countByParams(name,salary, completedTasks,outstandingTasks,workProjects,online);
-        }
+//        @Override
+//        public Integer countByParams(Map<String, String> params) {
+//            String name = (String) params.getOrDefault("name", null);
+//            String completedTasks = params.getOrDefault("completedTasks", null);
+//            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
+//            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
+//            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
+//            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
+//            return userRepo.countByParams(name,salary, completedTasks,outstandingTasks,workProjects,online);
+//        }
 
         @Override
         public Integer count() {
             try {
-                return Math.toIntExact(userRepoIMPL.count());
+                return Math.toIntExact(userRepo.count());
             } catch (ArithmeticException e) {
                 return Integer.MAX_VALUE;
             }
@@ -122,7 +122,7 @@ public class WorkServiceImpl implements WorkerService{
 
         @Override
         public boolean existsById(Long id) {
-            return userRepoIMPL.existsById(id);
+            return userRepo.existsById(id);
         }
 
         @Override
