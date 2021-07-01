@@ -6,12 +6,11 @@ import com.presentation.andy.projects.Projects;
 
 import com.presentation.andy.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -20,15 +19,15 @@ public class WorkServiceImpl implements WorkerService{
 
 
        private final UserRepo userRepo;
-
+@Autowired
     public WorkServiceImpl(UserRepo userRepo) {
         this.userRepo = userRepo;
     }
 
 
     @Override
-        public List<Worker> findAll(Pageable pageable) {
-            return userRepo.findAll(pageable).stream().collect(Collectors.toList());
+        public List<Worker> findAll() {
+            return new ArrayList<>(userRepo.findAll());
         }
 
         @Override
@@ -82,34 +81,6 @@ public class WorkServiceImpl implements WorkerService{
             }
         }
 
-        @Override
-        public Worker findById(Long id) {
-            return userRepo.findById(id).get();
-        }
-
-
-        @Override
-        public List<Worker> findByParams(Map<String, String> params) {
-            String name = (String) params.getOrDefault("name", null);
-            String completedTasks = params.getOrDefault("completedTasks", null);
-            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
-            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
-            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
-            return userRepo.findAllByParams( name ,salary, completedTasks,outstandingTasks,workProjects,online).stream().collect(Collectors.toList());
-
-        }
-
-        @Override
-        public Integer countByParams(Map<String, String> params) {
-            String name = (String) params.getOrDefault("name", null);
-            String completedTasks = params.getOrDefault("completedTasks", null);
-            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-            Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf((String) params.get("workProjects")) : null;
-            Boolean online = params.containsKey("online") ? Boolean.parseBoolean(params.get("online")) : null;
-            Integer salary =Integer.parseInt( params.getOrDefault("salary", "0"));
-            return userRepo.countByParams(name,salary, completedTasks,outstandingTasks,workProjects,online);
-        }
 
         @Override
         public Integer count() {
@@ -120,7 +91,12 @@ public class WorkServiceImpl implements WorkerService{
             }
         }
 
-        @Override
+    @Override
+    public Worker findById(Long id) {
+        return null;
+    }
+
+    @Override
         public boolean existsById(Long id) {
             return userRepo.existsById(id);
         }

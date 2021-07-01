@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface WorkerService {
-    List<Worker> findAll(Pageable pageable);
+    List<Worker> findAll();
     Worker add(Map<String, String> params);
     Worker updatePlayer(Long id, Map<String, String> params);
     boolean deleteById(Long id);
-    List<Worker> findByParams(Map<String, String> params);
-    Integer countByParams(Map<String, String> params);
+//    List<Worker> findByParams(Map<String, String> params);
+//    Integer countByParams(Map<String, String> params);
     Integer count();
     Worker findById(Long id);
     boolean existsById(Long id);
