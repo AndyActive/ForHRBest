@@ -28,15 +28,15 @@
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">
+                        <a class="nav-link active" aria-current="page" href="/">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                             Главная страница
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/orders">
+                        <a class="nav-link" href="/tasks">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file" aria-hidden="true"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                            Orders
+                            Управление задачами
                         </a>
                     </li>
                     <li class="nav-item">
@@ -46,7 +46,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/management">
+                        <a class="nav-link" href="/workers">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                             Управление работниками
                         </a>
@@ -125,144 +125,19 @@
                         <th scope="col">Имя</th>
                         <th scope="col">Выполненные задачи</th>
                         <th scope="col">Невыполненные задачи</th>
-                        <th scope="col">Производительность</th>
+                        <th scope="col">оплата в день</th>
                         <th scope="col">Проект</th>
                         <th scope="col">Сейчас работает</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each = "user: ${users}">
-                        <td th:text="${user.name}">vasile</td>
-                        <td th:text="${user.getSalary()}">45</td>
-                    </tr>
-                    <tr>
-                        <td>1,002</td>
-                        <td>placeholder</td>
-                        <td>irrelevant</td>
-                        <td>visual</td>
-                        <td>layout</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>data</td>
-                        <td>rich</td>
-                        <td>dashboard</td>
-                        <td>tabular</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>Некоторые белорусские автолюбители по старинке называют актуальные таможенные
-                            пошлины «новыми». Действительно, кажется, еще совсем недавно из Европы можно было
-                            пригнать 2-литровый Renault Laguna 2007 года и заплатить за растаможку всего 1400 евро.
-                            Между тем «новым» таможенным реалиям послезавтра исполняется 10 лет — пошлины,
-                            ставящие крест на ввозе большей части «бэушки», вступили в силу 1 июля 2011 года.
-                            Это было одним из правил вступления Беларуси в Таможенный союз. С тех пор автомобильный
-                            рынок нашей страны становится все больше похожим на российский, хотя до 2011 года мы, пусть
-                            и с отставанием, шли по пути европейского автопарка. Зато за последние 10 лет мы стали покупать
-                            намного больше новых автомобилей у дилера. Давайте посмотрим, что мы получили, а что потеряли
-                            в результате синхронизации таможенных ставок с Россией.</td>
-                        <td>placeholder</td>
-                        <td>illustrative</td>
-                        <td>data</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,004</td>
-                        <td>text</td>
-                        <td>random</td>
-                        <td>layout</td>
-                        <td>dashboard</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,005</td>
-                        <td>dashboard</td>
-                        <td>irrelevant</td>
-                        <td>text</td>
-                        <td>placeholder</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,006</td>
-                        <td>dashboard</td>
-                        <td>illustrative</td>
-                        <td>rich</td>
-                        <td>data</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,007</td>
-                        <td>placeholder</td>
-                        <td>tabular</td>
-                        <td>information</td>
-                        <td>irrelevant</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,008</td>
-                        <td>random</td>
-                        <td>data</td>
-                        <td>placeholder</td>
-                        <td>text</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,009</td>
-                        <td>placeholder</td>
-                        <td>irrelevant</td>
-                        <td>visual</td>
-                        <td>layout</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,010</td>
-                        <td>data</td>
-                        <td>rich</td>
-                        <td>dashboard</td>
-                        <td>tabular</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,011</td>
-                        <td>information</td>
-                        <td>placeholder</td>
-                        <td>illustrative</td>
-                        <td>data</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,012</td>
-                        <td>text</td>
-                        <td>placeholder</td>
-                        <td>layout</td>
-                        <td>dashboard</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,013</td>
-                        <td>dashboard</td>
-                        <td>irrelevant</td>
-                        <td>text</td>
-                        <td>visual</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,014</td>
-                        <td>dashboard</td>
-                        <td>illustrative</td>
-                        <td>rich</td>
-                        <td>data</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,015</td>
-                        <td>random</td>
-                        <td>tabular</td>
-                        <td>information</td>
-                        <td>text</td>
-                        <td>text</td>
+                        <td th:text="${user.getName()}"></td>
+                        <td th:text="${user.getCdTasks()}"></td>
+                        <td th:text="${user.getOutstandingTasks()}"></td>
+                        <td th:text="${user.getSalary()}"></td>
+                        <td th:text="${user.getWorkProjects()}"></td>
+                        <td th:text="${user.getOnline()}"></td>
                     </tr>
                     </tbody>
                 </table>

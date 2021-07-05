@@ -11,25 +11,24 @@ public class Worker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer salary ;
+    private Integer salary;
     private String name;
-    private String completedTasks;
+    private String cdTasks;
     private String outstandingTasks;
-   @Enumerated( EnumType.STRING )
+    @Enumerated(EnumType.STRING)
     private Projects workProjects;
     private Boolean online;
 
-    public Worker() {
-    }
-
-    public Worker( int salary, String name, String completedTasks, String outstandingTasks, Projects workProjects, Boolean online) {
-        this.id = id;
+    public Worker(Integer salary, String name, String cdTasks, String outstandingTasks, Projects workProjects, Boolean online) {
         this.salary = salary;
         this.name = name;
-        this.completedTasks = completedTasks;
+        this.cdTasks = cdTasks;
         this.outstandingTasks = outstandingTasks;
         this.workProjects = workProjects;
         this.online = online;
+    }
+
+    public Worker() {
     }
 
     public Long getId() {
@@ -40,12 +39,12 @@ public class Worker {
         this.id = id;
     }
 
-    public int getSalary() {
+    public Integer getSalary() {
         return salary;
     }
 
-    public void setSalary(int performance) {
-        this.salary = performance;
+    public void setSalary(Integer salary) {
+        this.salary = salary;
     }
 
     public String getName() {
@@ -56,12 +55,12 @@ public class Worker {
         this.name = name;
     }
 
-    public String getCompletedTasks() {
-        return completedTasks;
+    public String getCdTasks() {
+        return cdTasks;
     }
 
-    public void setCompletedTasks(String completedTasks) {
-        this.completedTasks = completedTasks;
+    public void setCdTasks(String completedTasks) {
+        this.cdTasks = completedTasks;
     }
 
     public String getOutstandingTasks() {
@@ -87,6 +86,7 @@ public class Worker {
     public void setOnline(Boolean online) {
         this.online = online;
     }
-
 }
+
+
 
