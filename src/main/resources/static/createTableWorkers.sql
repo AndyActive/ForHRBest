@@ -2,13 +2,13 @@ DROP TABLE IF EXISTS worker;
 
 CREATE TABLE worker
 (
-    id               BIGINT(20)    NOT NULL AUTO_INCREMENT,
-    salary           INT(255)      NULL,
-    name             VARCHAR(12)   NULL,
-    cd_tasks   VARCHAR(255) NULL,
+    id                BIGINT(20)    NOT NULL AUTO_INCREMENT,
+    salary            INT(255)      NULL,
+    name              VARCHAR(12)   NULL,
+    cd_tasks          VARCHAR(255) NULL,
     outstanding_tasks VARCHAR(255) NULL,
     work_projects     VARCHAR(255)   NULL,
-    online           BIT(1)        NULL,
+    online            BIT(1)        NULL,
     PRIMARY KEY (id)
 );
 

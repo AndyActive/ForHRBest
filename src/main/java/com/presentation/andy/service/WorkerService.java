@@ -11,7 +11,7 @@ import java.util.Map;
 public interface WorkerService {
     List<Worker> findAll();
     Worker add(Map<String, String> params);
-    Worker updatePlayer(Long id, Map<String, String> params);
+    boolean updatePlayer(Long id, Map<String, String> params);
     boolean deleteById(Long id);
 //    List<Worker> findByParams(Map<String, String> params);
 //    Integer countByParams(Map<String, String> params);

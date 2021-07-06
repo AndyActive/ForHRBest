@@ -6,11 +6,13 @@ import com.presentation.andy.projects.Projects;
 
 import com.presentation.andy.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -24,14 +26,13 @@ public class WorkServiceImpl implements WorkerService {
         this.userRepo = userRepo;
     }
 
-
     @Override
     public List<Worker> findAll() {
-        ArrayList<Worker> workers =new ArrayList<>(userRepo.findAll());
-
-
-        return  workers;
+      return   new ArrayList<>(userRepo.findAll());
+      
     }
+
+
 
     @Override
     public Worker add(Map<String, String> params) {
@@ -50,27 +51,52 @@ public class WorkServiceImpl implements WorkerService {
     }
 
     @Override
-    public Worker updatePlayer(Long id, Map<String, String> params) {
-        if (!userRepo.findById(id).isPresent() || params == null) return null;
-        Worker result = userRepo.findById(id).get();
-        String name = params.getOrDefault("name", null);
-        String completedTasks = params.getOrDefault("completedTasks", null);
-        String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-        Projects workProjects = params.containsKey("workProjects") ? Projects.valueOf(params.get("workProjects")) : null;
-        Boolean online = params.containsKey("online") ? "true".equals(params.get("online")) : null;
-        Integer salary = Integer.parseInt(params.getOrDefault("salary", String.valueOf(result.getSalary())));
-        if (name != null) result.setName(name);
-        if (completedTasks != null) {
-            result.setCdTasks(result.getCdTasks() + " " + completedTasks);
-            result.setOutstandingTasks(result.getOutstandingTasks().replace(completedTasks, ""));
+    public boolean updatePlayer(Long id, Map<String, String> params) {
+        if (params == null)
+        {
+            System.out.println("пустые параметры");
+            return false;
+
         }
-        result.setSalary(salary);
-        if (outstandingTasks != null) result.setOutstandingTasks(result.getOutstandingTasks() + " " + outstandingTasks);
-        if (workProjects != null) result.setWorkProjects(workProjects);
+        try {
+            Worker result = userRepo.findById(id).get();
+            String allTaskReady = params.getOrDefault("allTaskReady","n");
+            if (allTaskReady.equals("y")){
+                System.out.println("y");
+                result.setCdTasks("");
+            }
+        String name = params.getOrDefault("name", null);
+        String cdTasks = params.getOrDefault("cdTasks", null);
+        String outstandingTasks = params.getOrDefault("outstandingTasks", null);
+        try{
+            Projects workProjects = params.containsKey("workProject") ? Projects.valueOf(params.get("workProject")) : null;
+            if (workProjects != null) result.setWorkProjects(workProjects);
+        }
+        catch (IllegalArgumentException e){
+            System.out.println("в работе нет таких проектов");
+        }
+        Boolean online = params.containsKey("online") ? "true".equals(params.get("online")) : null;
+        try {
+            Integer salary = Integer.parseInt(params.getOrDefault("salary", String.valueOf(result.getSalary())));
+            result.setSalary(salary);
+        }
+        catch (NumberFormatException e){
+///Loger.log(неверно выставленно ЗП)
+        }
+        if (name != null && name.length()>2) result.setName(name);
+        if (cdTasks != null && cdTasks.length()>3 && result.getOutstandingTasks().contains(cdTasks)) {
+           result.setOutstandingTasks(result.getOutstandingTasks().replaceAll( " Next: " + cdTasks, ""));
+            result.setCdTasks(result.getCdTasks() + " " +"Next: " + cdTasks);
+        }
+        if (outstandingTasks != null && outstandingTasks.length()>3) result.setOutstandingTasks(result.getOutstandingTasks() + " "+"Next: " + outstandingTasks);
         if (online != null) result.setOnline(online);
 
         userRepo.save(result); //AndFlush
-        return result;
+        return true;
+    }
+        catch (NoSuchElementException e){
+        return false;
+    }
     }
 
     @Override
