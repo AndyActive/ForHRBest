@@ -1,17 +1,12 @@
 package com.presentation.andy.controllers;
 
 
-import com.presentation.andy.model.Worker;
 import com.presentation.andy.service.WorkerService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +21,28 @@ public class HomeController {
         this.workerService = workerService;
     }
 
+
+    @Controller
+    public class AuthController {
+
+        @GetMapping("/login")
+        public String getLoginPage() {
+            return "login";
+        }
+
+        @GetMapping("/success")
+        public String getSuccessPage() {
+            return "success";
+        }
+    }
+
+    @GetMapping("/logout")
+    public String getLogout() {
+        return "login";
+    }
+
     @GetMapping("")
+    @PreAuthorize("hasAuthority('developers:read')")
     public String home(@RequestParam(value = "sort", required = false) String sort,
                        Model model) {
         model.addAttribute("title", "главный хому");
@@ -37,6 +53,7 @@ public class HomeController {
     }
 
     @GetMapping("/tasks")
+    @PreAuthorize("hasAuthority('developers:write')")
     public String management(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "task", required = false) String task,
@@ -46,12 +63,11 @@ public class HomeController {
             Model model) {
         model.addAttribute("users", workerService.findAll());
         model.addAttribute("title", "управление задачами");
-        Map<String,String> params = new HashMap<>();
-        params.put("outstandingTasks",task);
-        params.put("cdTasks",dellTask);
-        params.put("allTaskReady",allTaskReady);
-       if(id==null || !workerService.updatePlayer(id,params) )
-        {
+        Map<String, String> params = new HashMap<>();
+        params.put("outstandingTasks", task);
+        params.put("cdTasks", dellTask);
+        params.put("allTaskReady", allTaskReady);
+        if (id == null || !workerService.updatePlayer(id, params)) {
             return "tasks";
         }
         return "index";
@@ -67,12 +83,11 @@ public class HomeController {
             Model model) {
         model.addAttribute("users", workerService.findAll());
         model.addAttribute("title", "управление работниками");
-        Map<String,String> params = new HashMap<>();
-        params.put("name",name);
-        params.put("salary",salary);
-        params.put("workProject",workProject);
-        if(id==null || !workerService.updatePlayer(id,params) )
-        {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("salary", salary);
+        params.put("workProject", workProject);
+        if (id == null || !workerService.updatePlayer(id, params)) {
             return "workers";
         }
         return "index";

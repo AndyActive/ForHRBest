@@ -1,6 +1,7 @@
-
 package com.presentation.andy.service;
 
+import com.presentation.andy.model.Role;
+import com.presentation.andy.model.Status;
 import com.presentation.andy.model.Worker;
 import com.presentation.andy.projects.Projects;
 
@@ -28,22 +29,26 @@ public class WorkServiceImpl implements WorkerService {
 
     @Override
     public List<Worker> findAll() {
-      return   new ArrayList<>(userRepo.findAll());
-      
-    }
+        return new ArrayList<>(userRepo.findAll());
 
+    }
 
 
     @Override
     public Worker add(Map<String, String> params) {
         try {
             String name = params.getOrDefault("name", null);
+            String fname = params.getOrDefault("fname", null);
+            String email = params.getOrDefault("email", null);
+            String pass = params.getOrDefault("pass", null);
             String completedTasks = params.getOrDefault("completedTasks", null);
             String outstandingTasks = params.getOrDefault("outstandingTasks", null);
             Projects workProjects = Projects.valueOf(params.get("workProjects"));
+            Role role = Role.valueOf(params.get("role"));
+            Status status = Status.valueOf(params.get("status"));
             Boolean online = Boolean.parseBoolean(params.getOrDefault("online", "false"));
             Integer salary = Integer.parseInt(params.getOrDefault("salary", "800"));
-            Worker worker = new Worker(salary, name, completedTasks, outstandingTasks, workProjects, online);
+            Worker worker = new Worker(email, pass, salary, name, fname, role, status, completedTasks, outstandingTasks, workProjects, online);
             return userRepo.save(worker);
         } catch (NullPointerException | IllegalArgumentException | ClassCastException e) {
             return null;
@@ -52,51 +57,48 @@ public class WorkServiceImpl implements WorkerService {
 
     @Override
     public boolean updatePlayer(Long id, Map<String, String> params) {
-        if (params == null)
-        {
+        if (params == null) {
             System.out.println("пустые параметры");
             return false;
 
         }
         try {
             Worker result = userRepo.findById(id).get();
-            String allTaskReady = params.getOrDefault("allTaskReady","n");
-            if (allTaskReady.equals("y")){
+            String allTaskReady = params.getOrDefault("allTaskReady", "n");
+            if (allTaskReady.equals("y")) {
                 System.out.println("y");
                 result.setCdTasks("");
             }
-        String name = params.getOrDefault("name", null);
-        String cdTasks = params.getOrDefault("cdTasks", null);
-        String outstandingTasks = params.getOrDefault("outstandingTasks", null);
-        try{
-            Projects workProjects = params.containsKey("workProject") ? Projects.valueOf(params.get("workProject")) : null;
-            if (workProjects != null) result.setWorkProjects(workProjects);
-        }
-        catch (IllegalArgumentException e){
-            System.out.println("в работе нет таких проектов");
-        }
-        Boolean online = params.containsKey("online") ? "true".equals(params.get("online")) : null;
-        try {
-            Integer salary = Integer.parseInt(params.getOrDefault("salary", String.valueOf(result.getSalary())));
-            result.setSalary(salary);
-        }
-        catch (NumberFormatException e){
+            String name = params.getOrDefault("name", null);
+            String cdTasks = params.getOrDefault("cdTasks", null);
+            String outstandingTasks = params.getOrDefault("outstandingTasks", null);
+            try {
+                Projects workProjects = params.containsKey("workProject") ? Projects.valueOf(params.get("workProject")) : null;
+                if (workProjects != null) result.setWorkProjects(workProjects);
+            } catch (IllegalArgumentException e) {
+                System.out.println("в работе нет таких проектов");
+            }
+            Boolean online = params.containsKey("online") ? "true".equals(params.get("online")) : null;
+            try {
+                Integer salary = Integer.parseInt(params.getOrDefault("salary", String.valueOf(result.getSalary())));
+                result.setSalary(salary);
+            } catch (NumberFormatException e) {
 ///Loger.log(неверно выставленно ЗП)
-        }
-        if (name != null && name.length()>2) result.setName(name);
-        if (cdTasks != null && cdTasks.length()>3 && result.getOutstandingTasks().contains(cdTasks)) {
-           result.setOutstandingTasks(result.getOutstandingTasks().replaceAll( " Next: " + cdTasks, ""));
-            result.setCdTasks(result.getCdTasks() + " " +"Next: " + cdTasks);
-        }
-        if (outstandingTasks != null && outstandingTasks.length()>3) result.setOutstandingTasks(result.getOutstandingTasks() + " "+"Next: " + outstandingTasks);
-        if (online != null) result.setOnline(online);
+            }
+            if (name != null && name.length() > 2) result.setFirstName(name);
+            if (cdTasks != null && cdTasks.length() > 3 && result.getOutstandingTasks().contains(cdTasks)) {
+                result.setOutstandingTasks(result.getOutstandingTasks().replaceAll(" Next: " + cdTasks, ""));
+                result.setCdTasks(result.getCdTasks() + " " + "Next: " + cdTasks);
+            }
+            if (outstandingTasks != null && outstandingTasks.length() > 3)
+                result.setOutstandingTasks(result.getOutstandingTasks() + " " + "Next: " + outstandingTasks);
+            if (online != null) result.setOnline(online);
 
-        userRepo.save(result); //AndFlush
-        return true;
-    }
-        catch (NoSuchElementException e){
-        return false;
-    }
+            userRepo.save(result); //AndFlush
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
     @Override
