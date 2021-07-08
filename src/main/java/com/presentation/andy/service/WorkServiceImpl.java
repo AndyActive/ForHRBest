@@ -1,19 +1,18 @@
 package com.presentation.andy.service;
 
+import com.presentation.andy.loger.Loger;
 import com.presentation.andy.model.Role;
 import com.presentation.andy.model.Status;
 import com.presentation.andy.model.Worker;
-import com.presentation.andy.projects.Projects;
-
+import com.presentation.andy.enums.Column;
+import com.presentation.andy.enums.Projects;
 import com.presentation.andy.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 @Service
@@ -21,6 +20,8 @@ public class WorkServiceImpl implements WorkerService {
 
 
     private final UserRepo userRepo;
+
+    private static Loger loger =new Loger();
 
     @Autowired
     public WorkServiceImpl(UserRepo userRepo) {
@@ -31,7 +32,36 @@ public class WorkServiceImpl implements WorkerService {
     public List<Worker> findAll() {
         return new ArrayList<>(userRepo.findAll());
 
+
     }
+    @Override
+    public boolean getResolution(){
+        Optional<Worker> worker = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return worker.get().getRole().equals(Role.ADMIN);
+    }
+
+
+    @Override
+    public List<Worker> SortByNameCollum(String sort){
+           try {
+               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.имя.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "firstname"));
+               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.выполненныезадачи.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.DESC, "cdtasks"));
+               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.невыполненныезадачи.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.DESC, "outstandingtasks"));
+               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.оплатавдень.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "salary"));
+               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.проект.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "workprojects"));
+               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.сейчасработает.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "online"));
+           }
+          catch (IllegalArgumentException e){
+               loger.log("неверный агрумент для сортировки") ;
+              return userRepo.findAll();
+          }
+           catch (NullPointerException e){
+               loger.log("непредоставлен агрумент для сортировки") ;
+        }
+        return userRepo.findAll();
+    }
+
+
 
 
     @Override
@@ -57,7 +87,7 @@ public class WorkServiceImpl implements WorkerService {
 
     @Override
     public boolean updatePlayer(Long id, Map<String, String> params) {
-        if (params == null) {
+        if (params == null ) {
             System.out.println("пустые параметры");
             return false;
 
@@ -67,16 +97,16 @@ public class WorkServiceImpl implements WorkerService {
             String allTaskReady = params.getOrDefault("allTaskReady", "n");
             if (allTaskReady.equals("y")) {
                 System.out.println("y");
-                result.setCdTasks("");
+                result.setCdtasks("");
             }
             String name = params.getOrDefault("name", null);
             String cdTasks = params.getOrDefault("cdTasks", null);
             String outstandingTasks = params.getOrDefault("outstandingTasks", null);
             try {
                 Projects workProjects = params.containsKey("workProject") ? Projects.valueOf(params.get("workProject")) : null;
-                if (workProjects != null) result.setWorkProjects(workProjects);
+                if (workProjects != null) result.setWorkprojects(workProjects);
             } catch (IllegalArgumentException e) {
-                System.out.println("в работе нет таких проектов");
+                System.out.println("в работе нет таких проектов перевод не возможен");
             }
             Boolean online = params.containsKey("online") ? "true".equals(params.get("online")) : null;
             try {
@@ -85,13 +115,13 @@ public class WorkServiceImpl implements WorkerService {
             } catch (NumberFormatException e) {
 ///Loger.log(неверно выставленно ЗП)
             }
-            if (name != null && name.length() > 2) result.setFirstName(name);
-            if (cdTasks != null && cdTasks.length() > 3 && result.getOutstandingTasks().contains(cdTasks)) {
-                result.setOutstandingTasks(result.getOutstandingTasks().replaceAll(" Next: " + cdTasks, ""));
-                result.setCdTasks(result.getCdTasks() + " " + "Next: " + cdTasks);
+            if (name != null && name.length() > 2 && name.length()<12) result.setFirstname(name);
+            if (cdTasks != null && cdTasks.length() > 3 && result.getOutstandingtasks().contains(cdTasks)) {
+                result.setOutstandingtasks(result.getOutstandingtasks().replaceAll(" Next: " + cdTasks, ""));
+                result.setCdtasks(result.getCdtasks() + " " + "Next: " + cdTasks);
             }
             if (outstandingTasks != null && outstandingTasks.length() > 3)
-                result.setOutstandingTasks(result.getOutstandingTasks() + " " + "Next: " + outstandingTasks);
+                result.setOutstandingtasks(result.getOutstandingtasks() + " " + "Next: " + outstandingTasks);
             if (online != null) result.setOnline(online);
 
             userRepo.save(result); //AndFlush
@@ -198,8 +228,8 @@ public class WorkServiceImpl implements WorkerService {
 
     public boolean validSalary(String salary) {
         try {
-            int exp = Integer.parseInt(salary);
-            return exp <= 10000 && exp >= 0;
+            int sal = Integer.parseInt(salary);
+            return sal <= 10000 && sal >= 0;
         } catch (NumberFormatException | NullPointerException e) {
             return false;
         }

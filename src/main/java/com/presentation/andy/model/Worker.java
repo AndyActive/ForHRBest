@@ -1,6 +1,6 @@
 package com.presentation.andy.model;
 
-import com.presentation.andy.projects.Projects;
+import com.presentation.andy.enums.Projects;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,33 +15,33 @@ public class Worker {
     private String email;
     private String password;
     private Integer salary;
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     @Enumerated(value = EnumType.STRING)
     private Role role;
     @Enumerated(value = EnumType.STRING)
     private Status status;
-    private String cdTasks;
-    private String outstandingTasks;
+    private String cdtasks;
+    private String outstandingtasks;
     @Enumerated(EnumType.STRING)
-    private Projects workProjects;
+    private Projects workprojects;
     private Boolean online;
 
-    public Worker(String email, String password, Integer salary, String firstName, String lastName, Role role, Status status, String cdTasks, String outstandingTasks, Projects workProjects, Boolean online) {
+    public Worker() {
+    }
+
+    public Worker(String email, String password, Integer salary, String firstname, String lastname, Role role, Status status, String cdtasks, String outstandingtasks, Projects workprojects, Boolean online) {
         this.email = email;
         this.password = password;
         this.salary = salary;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.role = role;
         this.status = status;
-        this.cdTasks = cdTasks;
-        this.outstandingTasks = outstandingTasks;
-        this.workProjects = workProjects;
+        this.cdtasks = cdtasks;
+        this.outstandingtasks = outstandingtasks;
+        this.workprojects = workprojects;
         this.online = online;
-    }
-
-    public Worker() {
     }
 
     public Long getId() {
@@ -76,20 +76,20 @@ public class Worker {
         this.salary = salary;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public Role getRole() {
@@ -108,28 +108,28 @@ public class Worker {
         this.status = status;
     }
 
-    public String getCdTasks() {
-        return cdTasks;
+    public String getCdtasks() {
+        return cdtasks;
     }
 
-    public void setCdTasks(String cdTasks) {
-        this.cdTasks = cdTasks;
+    public void setCdtasks(String cdtasks) {
+        this.cdtasks = cdtasks;
     }
 
-    public String getOutstandingTasks() {
-        return outstandingTasks;
+    public String getOutstandingtasks() {
+        return outstandingtasks;
     }
 
-    public void setOutstandingTasks(String outstandingTasks) {
-        this.outstandingTasks = outstandingTasks;
+    public void setOutstandingtasks(String outstandingtasks) {
+        this.outstandingtasks = outstandingtasks;
     }
 
-    public Projects getWorkProjects() {
-        return workProjects;
+    public Projects getWorkprojects() {
+        return workprojects;
     }
 
-    public void setWorkProjects(Projects workProjects) {
-        this.workProjects = workProjects;
+    public void setWorkprojects(Projects workprojects) {
+        this.workprojects = workprojects;
     }
 
     public Boolean getOnline() {

@@ -1,4 +1,4 @@
-package com.presentation.andy.projects;
+package com.presentation.andy.enums;
 
 
 public enum Projects {

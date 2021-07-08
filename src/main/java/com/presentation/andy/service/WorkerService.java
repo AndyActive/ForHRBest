@@ -17,6 +17,10 @@ public interface WorkerService {
 
     boolean deleteById(Long id);
 
+    boolean getResolution();
+
+    List<Worker> SortByNameCollum(String sort);
+
     //    List<Worker> findByParams(Map<String, String> params);
 //    Integer countByParams(Map<String, String> params);
     Integer count();
