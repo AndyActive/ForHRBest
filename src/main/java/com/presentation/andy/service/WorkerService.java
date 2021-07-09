@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface WorkerService {
     List<Worker> findAll();
 
-    Worker add(Map<String, String> params);
+    boolean add(Map<String, String> params);
 
     boolean updateTasks(Map<String, String> params);
 

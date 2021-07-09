@@ -37,7 +37,7 @@ public class WorkServiceImpl implements WorkerService {
     @Override
     public boolean getResolution(){
         Optional<Worker> worker = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        return worker.get().getRole().equals(Role.ADMIN);
+        return worker.get().getRole().equals(Role.ADMIN) || worker.get().getRole().equals(Role.SUPERADMIN);
     }
     @Override
     public boolean getResolutionForAdd() {
@@ -67,7 +67,7 @@ public class WorkServiceImpl implements WorkerService {
 
     //String pw_hash = BCrypt.hashpw(root, BCrypt.gensalt(12));
     @Override
-    public Worker add(Map<String, String> params) {
+    public boolean add(Map<String, String> params) {
         try {
             if(isParamsValid(params) || isAllParamsFound(params)) {
                 String email = params.getOrDefault("email", null);
@@ -80,15 +80,16 @@ public class WorkServiceImpl implements WorkerService {
                 Status status = Status.valueOf(params.get("status"));
                 Projects workProjects = Projects.valueOf(params.get("workProjects"));
                 Boolean online = Boolean.parseBoolean(params.getOrDefault("online", "false"));
-                Worker worker = new Worker(email, pass, salary, name, fname, role, status, null, null, workProjects, online);
-                return userRepo.save(worker);
+               // Worker worker = new Worker(email, pass, salary, name, fname, role, status, null, null, workProjects, online);
+                userRepo.save(new Worker(email, pass, salary, name, fname, role, status, null, null, workProjects, online));
+                return true;
             }
         } catch (NullPointerException | IllegalArgumentException | ClassCastException e) {
             loger.log("Новый работник не добавлен, ошибка присваивания параметров ! ");
-            return null;
+            return false;
         }
         loger.log("Новый работник не добавлен, введены не все параметры или параметры не валидны ! ");
-        return null;
+        return false;
     }
 
     @Override
@@ -119,7 +120,9 @@ public class WorkServiceImpl implements WorkerService {
     }
 
     private boolean validEmail(String email) {
-        return email != null && email.contains("@") && ( email.contains(".com") || email.contains(".ru"));
+           return email != null &&
+                   email.contains("@") &&
+                   ( email.contains(".com") || email.contains(".ru"));
     }
 
     private boolean validPass(String pass) {
