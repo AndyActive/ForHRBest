@@ -6,9 +6,9 @@ import java.util.Date;
 public class Loger {
     public void log(String message){
         System.out.println(message);
-        try(FileWriter writer = new FileWriter("D:\\log.txt", false))
+        try(FileWriter writer = new FileWriter("D:\\log.txt"))
         {
-            writer.write(message+" "+new Date().toString()+" !"+"\n");
+            writer.write(message+"  !"+"\n");
             writer.flush();
         }
         catch(IOException e){

@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +15,6 @@ import java.util.Map;
 public class HomeController {
 
     private final WorkerService workerService;
-
-
 
     @Autowired
     public HomeController(WorkerService workerService) {
@@ -48,47 +45,23 @@ public class HomeController {
 
     @GetMapping("/tasks")
     @PreAuthorize("hasAuthority('developers:read')")
-    public String management(
-            @RequestParam(value = "id", required = false) Long id,
-            @RequestParam(value = "task", required = false) String task,
-            @RequestParam(value = "delTask", required = false) String dellTask,
-            @RequestParam(value = "allTaskReady", required = false) String allTaskReady,
-            @RequestParam(value = "sort", required = false) String sort,
-            Model model) {
-
-        if (workerService.getResolution()) {
-            model.addAttribute("users", workerService.SortByNameCollum(sort));
-            model.addAttribute("title", "вы находитесь на вкладке Управление задачами");
-            Map<String, String> params = new HashMap<>();
-            params.put("outstandingTasks", task);
-            params.put("cdTasks", dellTask);
-            params.put("allTaskReady", allTaskReady);
-            if (id == null || !workerService.updatePlayer(id, params)) {
-                return "tasks";
-            }
-           return "redirect:/";
-        }
+    public String management( @RequestParam Map<String,String> Params, Model model) {
+           if(workerService.getResolution()) {
+               model.addAttribute("title", "вы находитесь на вкладке Управление задачами");
+               if (!workerService.updateTasks(Params)) {
+                   return "tasks";
+               }
+               return "redirect:/";
+           }
         return "accessEror";
-
     }
 
     @GetMapping("/workers")
     @PreAuthorize("hasAuthority('developers:read')")
-    public String workers(
-            @RequestParam(value = "id", required = false) Long id,
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "salary", required = false) String salary,
-            @RequestParam(value = "workProject", required = false) String workProject,
-            @RequestParam(value = "sort", required = false) String sort,
-            Model model) {
-        if (workerService.getResolution()) {
-            model.addAttribute("users", workerService.SortByNameCollum(sort));
-            model.addAttribute("title", "вы находитесь на вкладке  управление работниками");
-            Map<String, String> params = new HashMap<>();
-            params.put("name", name);
-            params.put("salary", salary);
-            params.put("workProject", workProject);
-            if (id == null || !workerService.updatePlayer(id, params)) {
+    public String workers( @RequestParam Map<String,String> Params, Model model) {
+        if(workerService.getResolutionForAdd()) {
+            model.addAttribute("title", "вы находитесь на вкладке Управление hf,jnybrfvb");
+            if (!workerService.updateEmployer(Params)) {
                 return "workers";
             }
             return "redirect:/";

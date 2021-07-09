@@ -18,7 +18,7 @@ CREATE TABLE worker
 );
 
 INSERT INTO worker (email ,password,salary,firstName,lastName,role,status, cdTasks, outstandingTasks, workProjects, online)
-VALUES ('lixtar@gmail.com', '$2y$12$exlAoIe1TEsEfMETo9ItRubB4dR.bXQoex048oRNG/KlaqSj93JQ6',1000, 'Регарн', 'Рожденный','ADMIN' ,'ACTIVE','Next Кодить ','Next реализацию метода getGuns ' ,'cosmos', false)
+VALUES ('lixtar@gmail.com', '$2y$12$exlAoIe1TEsEfMETo9ItRubB4dR.bXQoex048oRNG/KlaqSj93JQ6',1000, 'Регарн', 'Рожденный','SUPERADMIN' ,'ACTIVE','Next Кодить ','Next реализацию метода getGuns ' ,'cosmos', false)
      , ('1@gmail.com', '$2y$12$exlAoIe1TEsEfMETo9ItRubB4dR.bXQoex048oRNG/KlaqSj93JQ6',1744, 'Никрашш', 'НайтВульф', 'ADMIN' ,'ACTIVE','Next Кодить ','Next реализацию метода getGuns ', 'cosmos', false)
      , ('2@gmail.com', '$2y$12$exlAoIe1TEsEfMETo9ItRubB4dR.bXQoex048oRNG/KlaqSj93JQ6',804, 'Эззэссэль', 'шипящая', 'ADMIN' ,'ACTIVE','Next Кодить ','Next реализацию метода getGuns ', 'cosmos', true)
      , ('3@gmail.com', '$2y$12$exlAoIe1TEsEfMETo9ItRubB4dR.bXQoex048oRNG/KlaqSj93JQ6',4455, 'Бэлан', 'Тсе Раа', 'ADMIN' ,'ACTIVE','Next Кодить ','Next реализацию метода getGuns ', 'cosmos', true)
