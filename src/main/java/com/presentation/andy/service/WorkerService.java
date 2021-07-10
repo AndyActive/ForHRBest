@@ -31,6 +31,8 @@ public interface WorkerService {
     boolean getResolutionForAdd();
 
     boolean updateEmployer(Map<String, String> params);
+
+    boolean outTask(Map<String, String> params);
 }
 
 

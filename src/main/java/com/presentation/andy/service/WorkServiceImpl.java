@@ -22,7 +22,8 @@ public class WorkServiceImpl implements WorkerService {
 
     private final UserRepo userRepo;
 
-    private static final Loger loger =new Loger();
+    private static final Loger loger = new Loger();
+
 
     @Autowired
     public WorkServiceImpl(UserRepo userRepo) {
@@ -34,11 +35,18 @@ public class WorkServiceImpl implements WorkerService {
         return new ArrayList<>(userRepo.findAll());
     }
 
+
+    public boolean search(String search) {
+        return false;
+    }
+
     @Override
-    public boolean getResolution(){
+    public boolean getResolution() {
         Optional<Worker> worker = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return worker.get().getRole().equals(Role.ADMIN) || worker.get().getRole().equals(Role.SUPERADMIN);
+
     }
+
     @Override
     public boolean getResolutionForAdd() {
         Optional<Worker> worker = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -46,42 +54,46 @@ public class WorkServiceImpl implements WorkerService {
     }
 
     @Override
-    public List<Worker> SortByNameCollum(String sort){
-           try {
-               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.имя.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "firstname"));
-               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.выполненныезадачи.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.DESC, "cdtasks"));
-               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.невыполненныезадачи.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.DESC, "outstandingtasks"));
-               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.оплатавдень.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "salary"));
-               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.проект.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "workprojects"));
-               if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.сейчасработает.toString()))  return userRepo.findAll(Sort.by(Sort.Direction.ASC, "online"));
-           }
-          catch (IllegalArgumentException e){
-               loger.log("неверный агрумент для сортировки") ;
-              return userRepo.findAll();
-          }
-           catch (NullPointerException e){
-               loger.log("непредоставлен агрумент для сортировки") ;
+    public List<Worker> SortByNameCollum(String sort) {
+        try {
+            if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.имя.toString()))
+                return userRepo.findAll(Sort.by(Sort.Direction.ASC, "firstname"));
+            if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.выполненныезадачи.toString()))
+                return userRepo.findAll(Sort.by(Sort.Direction.DESC, "cdtasks"));
+            if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.невыполненныезадачи.toString()))
+                return userRepo.findAll(Sort.by(Sort.Direction.DESC, "outstandingtasks"));
+            if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.оплатавдень.toString()))
+                return userRepo.findAll(Sort.by(Sort.Direction.ASC, "salary"));
+            if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.проект.toString()))
+                return userRepo.findAll(Sort.by(Sort.Direction.ASC, "workprojects"));
+            if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.сейчасработает.toString()))
+                return userRepo.findAll(Sort.by(Sort.Direction.ASC, "online"));
+            if ((sort.replaceAll(" ", "").toLowerCase(Locale.ROOT)).equals(Column.задачиотправленныенапроверку.toString()))
+                return userRepo.findAll(Sort.by(Sort.Direction.DESC, "outtask"));
+        } catch (IllegalArgumentException e) {
+            loger.log("неверный агрумент для сортировки");
+            return userRepo.findAll();
+        } catch (NullPointerException e) {
+            loger.log("непредоставлен агрумент для сортировки");
         }
         return userRepo.findAll();
     }
 
-    //String pw_hash = BCrypt.hashpw(root, BCrypt.gensalt(12));
     @Override
     public boolean add(Map<String, String> params) {
         try {
-            if(isParamsValid(params) || isAllParamsFound(params)) {
+            if (isParamsValid(params) || isAllParamsFound(params)) {
                 String email = params.getOrDefault("email", null);
                 String pass = params.getOrDefault("pass", null);
                 pass = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-                Integer salary = Integer.parseInt(params.getOrDefault("salary", null));
+                Integer salary = Integer.valueOf(params.getOrDefault("salary", null));
                 String name = params.getOrDefault("name", null);
                 String fname = params.getOrDefault("fname", null);
                 Role role = Role.valueOf(params.get("role"));
                 Status status = Status.valueOf(params.get("status"));
                 Projects workProjects = Projects.valueOf(params.get("workProjects"));
                 Boolean online = Boolean.parseBoolean(params.getOrDefault("online", "false"));
-               // Worker worker = new Worker(email, pass, salary, name, fname, role, status, null, null, workProjects, online);
-                userRepo.save(new Worker(email, pass, salary, name, fname, role, status, null, null, workProjects, online));
+                userRepo.save(new Worker(email, pass, salary, name, fname, role, status, null, null, workProjects, online, null));
                 return true;
             }
         } catch (NullPointerException | IllegalArgumentException | ClassCastException e) {
@@ -120,14 +132,15 @@ public class WorkServiceImpl implements WorkerService {
     }
 
     private boolean validEmail(String email) {
-           return email != null &&
-                   email.contains("@") &&
-                   ( email.contains(".com") || email.contains(".ru"));
+        return email != null &&
+                email.contains("@") &&
+                (email.contains(".com") || email.contains(".ru"));
     }
 
     private boolean validPass(String pass) {
-        return pass != null && pass.length()>3; //пока всё, это же тестовый проект!!!
+        return pass != null && pass.length() > 3; //пока всё, это же тестовый проект!!!
     }
+
     private boolean validSalary(String salary) {
         try {
             int sal = Integer.parseInt(salary);
@@ -146,10 +159,11 @@ public class WorkServiceImpl implements WorkerService {
     }
 
     private boolean validRole(String role) {
-         return role.equals("USER") || role.equals("ADMIN") || role.equals("SUPERADMIN") ;
+        return role.equals("USER") || role.equals("ADMIN") || role.equals("SUPERADMIN");
     }
+
     private boolean validStatus(String status) {
-        return status.equals("BANNED") || status.equals("ACTIVE") ;
+        return status.equals("BANNED") || status.equals("ACTIVE");
     }
 
     private boolean validTasks(String tasks) {
@@ -164,14 +178,15 @@ public class WorkServiceImpl implements WorkerService {
             return false;
         }
     }
+
     private boolean validOnline(String online) {
-        return online.equals("true") || online.equals("false") ;
+        return online.equals("true") || online.equals("false");
     }
 
 
     @Override
     public boolean updateTasks(Map<String, String> params) {
-        if (params == null || params.getOrDefault("id",null)==null) {
+        if (params == null || params.getOrDefault("id", null) == null) {
             loger.log("пустые параметры или не предоставлено ID");
             return false;
         }
@@ -180,21 +195,21 @@ public class WorkServiceImpl implements WorkerService {
             Worker result = userRepo.findById(Long.parseLong(params.get("id"))).get();
             String allTaskReady = params.getOrDefault("allTaskReady", "n");
             if (allTaskReady.equals("y")) {
-                System.out.println("y");
+                Optional<Worker> worker = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+                loger.log("Пользователь " + worker.get().getFirstname() + "проверил все задания у пользователя " + result.getFirstname());
                 result.setCdtasks("");
             }
             String delTask = params.getOrDefault("delTask", null);
             String task = params.getOrDefault("task", null);
-            if (validTasks(delTask) && result.getOutstandingtasks().contains(delTask)) {
-                result.setOutstandingtasks(result.getOutstandingtasks().replaceAll(" Next: " + delTask, ""));
-                result.setCdtasks(result.getCdtasks() + " " + "Next: " + delTask);
-            }
-            else loger.log("вы хотите убрать несуществующую задачу");
+            if (validTasks(delTask) && result.getOuttask().contains(delTask)) {
+                result.setOuttask(result.getOuttask().replaceAll(delTask, ""));
+                result.setCdtasks(result.getCdtasks() + delTask.replaceAll(",", "") + ", ");
+            } else loger.log("вы хотите убрать несуществующую задачу");
 
             if (validTasks(task))
-                result.setOutstandingtasks(result.getOutstandingtasks() + " " + "Next: " + task);
+                result.setOutstandingtasks(result.getOutstandingtasks() + task + ", ");
             userRepo.save(result); //AndFlush
-            loger.log("успешное редактирование задач пользователя "+result.getEmail());
+            loger.log("успешное редактирование задач пользователя " + result.getEmail());
             return true;
         } catch (NoSuchElementException | NullPointerException | NumberFormatException e) {
             loger.log("пользователь не найден или некорректно введён ID");
@@ -204,30 +219,49 @@ public class WorkServiceImpl implements WorkerService {
 
     @Override
     public boolean updateEmployer(Map<String, String> params) {
-        if (params == null || params.getOrDefault("id",null)==null) {
+        if (params == null || params.getOrDefault("id", null) == null) {
             loger.log("пустые параметры или не предоставлено ID");
             return false;
         }
+        if (params.get("salary").equals("")) params.remove("salary");
+        if (params.get("workProject").equals("")) params.remove("workProject");
+        if (params.get("name").equals("")) params.remove("name");
 
         try {
             Worker result = userRepo.findById(Long.parseLong(params.get("id"))).get();
             String name = params.getOrDefault("name", result.getFirstname());
-            int salary =  Integer.parseInt(params.getOrDefault("salary",result.getSalary().toString()));
+            Integer salary = Integer.valueOf(params.getOrDefault("salary", result.getSalary().toString()));
             Projects workProject = Projects.valueOf(params.getOrDefault("workProject", result.getWorkprojects().toString()));
-            if(validName(name) && validSalary(String.valueOf(salary))&& validWorkProjects(workProject.toString())){
-                System.out.println(workProject.toString());
-                result.setFirstname(name);
-                result.setSalary(salary);
-                result.setWorkprojects(workProject);
-                userRepo.save(result); //AndFlush
-                loger.log("успешное редактирование задач пользователя "+result.getEmail());
-                return true;
-            }
-            return false;
-        } catch (NoSuchElementException | NullPointerException | NumberFormatException e) {
+            result.setWorkprojects(workProject);
+            result.setFirstname(name);
+            result.setSalary(salary);
+            userRepo.save(result); //AndFlush
+            loger.log("успешное редактирование задач пользователя " + result.getEmail());
+            return true;
+
+        } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
             loger.log("пользователь не найден или некорректно введены параметры");
             return false;
         }
+    }
+
+    @Override
+    public boolean outTask(Map<String, String> params) {
+        String task = params.getOrDefault("task", null);
+        if (validTasks(task)) {
+            Optional<Worker> worker = userRepo.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+            if (worker.get().getOutstandingtasks().contains(task) && !worker.get().getOuttask().contains(task)) {
+                worker.get().setOutstandingtasks(worker.get().getOutstandingtasks().replaceAll(task, ""));
+                String newTask = task.replaceAll(",", "");
+                worker.get().setOuttask(worker.get().getOuttask() + newTask + ", ");
+                userRepo.save(worker.get());
+                loger.log("Задача успешно отправлена на проверку");
+                return true;
+            }
+        }
+        loger.log("задача не прошла валидацию или у вас нет такой задачи");
+        return false;
+
     }
 
     @Override

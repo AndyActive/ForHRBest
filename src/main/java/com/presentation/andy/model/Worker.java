@@ -26,11 +26,12 @@ public class Worker {
     @Enumerated(EnumType.STRING)
     private Projects workprojects;
     private Boolean online;
+    private String outtask;
 
     public Worker() {
     }
 
-    public Worker(String email, String password, Integer salary, String firstname, String lastname, Role role, Status status, String cdtasks, String outstandingtasks, Projects workprojects, Boolean online) {
+    public Worker(String email, String password, Integer salary, String firstname, String lastname, Role role, Status status, String cdtasks, String outstandingtasks, Projects workprojects, Boolean online, String outtask) {
         this.email = email;
         this.password = password;
         this.salary = salary;
@@ -42,6 +43,7 @@ public class Worker {
         this.outstandingtasks = outstandingtasks;
         this.workprojects = workprojects;
         this.online = online;
+        this.outtask = outtask;
     }
 
     public Long getId() {
@@ -138,6 +140,14 @@ public class Worker {
 
     public void setOnline(Boolean online) {
         this.online = online;
+    }
+
+    public String getOuttask() {
+        return outtask;
+    }
+
+    public void setOuttask(String outtask) {
+        this.outtask = outtask;
     }
 }
 

@@ -1,13 +1,13 @@
 package com.presentation.andy.controllers;
 
 
-import com.presentation.andy.model.Worker;
 import com.presentation.andy.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
 
@@ -43,25 +43,34 @@ public class HomeController {
 
     }
 
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('developers:read')")
+    public String search(@RequestParam(value = "search", required = false) String search,
+                         Model model) {
+        model.addAttribute("title", "вы находитесь на вкладке поиска");
+        return "search";
+
+    }
+
     @GetMapping("/tasks")
     @PreAuthorize("hasAuthority('developers:read')")
-    public String management( @RequestParam Map<String,String> Params, Model model) {
-           if(workerService.getResolution()) {
-               model.addAttribute("title", "вы находитесь на вкладке Управление задачами");
-               if (!workerService.updateTasks(Params)) {
-                   return "tasks";
-               }
-               return "redirect:/";
-           }
+    public String management(@RequestParam Map<String, String> Params, Model model) {
+        if (workerService.getResolution()) {
+            model.addAttribute("title", "вы находитесь на вкладке Управление задачами");
+            if (!workerService.updateTasks(Params)) {
+                return "tasks";
+            }
+            return "redirect:/";
+        }
         return "accessEror";
     }
 
     @GetMapping("/workers")
     @PreAuthorize("hasAuthority('developers:read')")
-    public String workers( @RequestParam Map<String,String> Params, Model model) {
-        if(workerService.getResolutionForAdd()) {
+    public String workers(@RequestParam Map<String, String> Params, Model model) {
+        if (workerService.getResolutionForAdd()) {
             model.addAttribute("title", "вы находитесь на вкладке Управление работниками");
-            model.addAttribute("users" ,workerService.findAll());
+            model.addAttribute("users", workerService.findAll());
             if (!workerService.updateEmployer(Params)) {
                 return "workers";
             }
@@ -69,10 +78,11 @@ public class HomeController {
         }
         return "accessEror";
     }
+
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('developers:read')")
-    public String add( @RequestParam Map<String,String> Params, Model model) {
-        if(workerService.getResolutionForAdd()) {
+    public String add(@RequestParam Map<String, String> Params, Model model) {
+        if (workerService.getResolutionForAdd()) {
             model.addAttribute("title", "вы находитесь на вкладке добавления нового сотрудника");
             if (!workerService.add(Params)) {
                 return "add";
@@ -88,5 +98,14 @@ public class HomeController {
         return "redirect:/workers";
     }
 
+    @GetMapping("/outtas")
+    @PreAuthorize("hasAuthority('developers:read')")
+    public String outTask(@RequestParam Map<String, String> Params, Model model) {
+        model.addAttribute("title", "вы находитесь на вкладке отправления задачи на проверку");
+        if (!workerService.outTask(Params)) {
+            return "outtas";
+        }
+        return "redirect:/";
+    }
 }
 
