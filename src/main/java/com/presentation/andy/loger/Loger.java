@@ -1,7 +1,6 @@
 package com.presentation.andy.loger;
 
 import java.io.*;
-import java.util.Date;
 
 public class Loger {
     public void log(String message) {
